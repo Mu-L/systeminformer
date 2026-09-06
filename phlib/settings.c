@@ -1452,6 +1452,12 @@ NTSTATUS PhLoadSettingsJson(
     if (status == STATUS_END_OF_FILE)
         return STATUS_SUCCESS;
 
+    // The content couldn't be parsed, which the parser is alone in reporting with this status.
+    // Report it as a corrupt file like the XML store so the caller can offer to reset the file
+    // instead of discarding the settings.
+    if (status == STATUS_FAIL_CHECK)
+        return STATUS_FILE_CORRUPT_ERROR;
+
     if (NT_SUCCESS(status))
     {
         if (PhGetJsonObjectType(object) == PH_JSON_OBJECT_TYPE_OBJECT)
