@@ -1248,10 +1248,12 @@ INT_PTR CALLBACK PhFindObjectsDlgProc(
             PhAddLayoutItem(&context->LayoutManager, context->TreeNewHandle, NULL, PH_ANCHOR_ALL);
 
             PhRegisterDialog(hwndDlg);
-            PhCreateSearchControl(
+            PhCreateSearchControl2(
                 hwndDlg,
                 context->SearchWindowHandle,
                 L"Find Handles or DLLs",
+                SETTING_SEARCH_FIND_OBJECTS_REGEX,
+                SETTING_SEARCH_FIND_OBJECTS_CASE_SENSITIVE,
                 PhFindObjectsSearchControlCallback,
                 context
                 );
