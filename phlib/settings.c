@@ -1449,6 +1449,9 @@ NTSTATUS PhLoadSettingsJson(
 
     status = PhLoadJsonObjectFromFile(&object, FileName);
 
+    if (status == STATUS_END_OF_FILE)
+        return STATUS_SUCCESS;
+
     if (NT_SUCCESS(status))
     {
         if (PhGetJsonObjectType(object) == PH_JSON_OBJECT_TYPE_OBJECT)
@@ -1559,7 +1562,12 @@ NTSTATUS PhLoadSettingsXml(
 
     PhpClearIgnoredSettings();
 
-    if (!NT_SUCCESS(status = PhLoadXmlObjectFromFile(FileName, &topNode)))
+    status = PhLoadXmlObjectFromFile(FileName, &topNode);
+
+    if (status == STATUS_END_OF_FILE)
+        return STATUS_SUCCESS;
+
+    if (!NT_SUCCESS(status))
         return status;
     if (!topNode) // Return corrupt status and reset the settings.
         return STATUS_FILE_CORRUPT_ERROR;
@@ -3582,7 +3590,7 @@ static VOID PhStringStripSubstringZ(
     )
 {
     SIZE_T length = PhCountStringZ(SubString);
-    
+
     if (length == 0)
         return;
 
